@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Unidad 2 :: Autoevaluación 3</title>
+
+<script src="jsflash/easeljs-0.6.0.min.js"></script>
+<script src="jsflash/tweenjs-0.4.0.min.js"></script>
+<script src="jsflash/movieclip-0.6.0.min.js"></script>
+<script src="jsflash/preloadjs-0.3.0.min.js"></script>
+<script src="baseRally.js"></script>
+
+<script type="text/javascript">
+/*
+var pregunta1 = {texto:"PREGUNTA",
+	opciones:[
+		{opcion:"OPCION1", correcta:false},
+		{opcion:"OPCION2", correcta:true},
+		{opcion:"OPCION3", correcta:false}
+	]
+};
+*/
+var pregunta1 = {texto:"La canasta básica comprende una lista de nutrientes indispensables que debemos de consumir como mínimo, y con la cual se puede establecer un nivel económico",
+	opciones:[
+		{opcion:"Verdadero", correcta:true},
+		{opcion:"Falso", correcta:false}
+	]
+};
+var pregunta2 = {texto:"Las políticas sociales están encaminadas",
+	opciones:[
+		{opcion:"Verdadero", correcta:true},
+		{opcion:"Falso", correcta:false}
+	]
+};
+var pregunta3 = {texto:"El salario mínimo contractual lo define cada empresas",
+	opciones:[
+		{opcion:"Verdadero", correcta:false},
+		{opcion:"Falso", correcta:true}
+	]
+};
+var pregunta4 = {texto:"Las necesidades básicas se presentan de forma independiente y aislada",
+	opciones:[
+		{opcion:"Verdadero", correcta:false},
+		{opcion:"Falso", correcta:true}
+	]
+};
+var pregunta5 = {texto:"La recreación se considera una necesidad básica sólo en los países desarrollados",
+	opciones:[
+		{opcion:"Verdadero", correcta:false},
+		{opcion:"Falso", correcta:true}
+	]
+};
+var conjuntoPreguntas = [pregunta1, pregunta2, pregunta3, pregunta4, pregunta5];
+var buenas = 0;
+var pActual = 0;
+var intento = 0;
+var maxIntento = 1;
+
+conjuntoPreguntas = shuffle(conjuntoPreguntas);//Comentar sí no se quiere que se revuelvan las preguntas
+
+function alCargar(){
+	//alert("cargado");
+	//setClicBotones();
+}
+
+function generarPregunta(numero){
+	var actual = conjuntoPreguntas[numero];
+	
+	var contenido = "<div class='preguntaTexto'>" + actual.texto + "</div><div class='opciones'>";
+    
+	for(var i=0; i<actual.opciones.length; i++){
+		contenido = contenido.concat("<a class='opcion pure-button' id='op"+i+"' data-correcto='" + actual.opciones[i].correcta + "'><img class='palomita' style='display:none' src='images/palomita.png' /><img class='tache' style='display:none' src='images/tache.png' />"+actual.opciones[i].opcion+"</a>");
+	}
+	contenido = contenido.concat("</div>");
+	document.getElementById("setPregunta").innerHTML = contenido;
+	
+	setClicBotones();
+	
+	pActual++;
+	document.getElementById("botonContinuar").style.display = "none";
+}
+
+
+function setClicBotones(){
+	var oList = document.getElementById("setPregunta").getElementsByTagName("a");
+	for(var i=0; i<oList.length; i++){
+		var objeto = oList[i];
+		//mensajear(objeto.className);
+		if (objeto.className.indexOf("opcion") == 0){
+			hacerOpcion(objeto);
+		}
+	}
+}
+function desactivarBotones(){
+	var oList = document.getElementById("setPregunta").getElementsByTagName("a");
+	for(var i=0; i<oList.length; i++){
+		var objeto = oList[i];
+		//mensajear(objeto.className);
+		if (objeto.className.indexOf("opcion") == 0){
+			deshacerOpcion(objeto);
+		}
+	}
+	intento = 0;
+	if(pActual < conjuntoPreguntas.length){
+		document.getElementById("botonContinuar").style.display = "";
+		document.getElementById("botonContinuar").value = "Siguiente";	
+	} else {//Si ya no hay más preguntas.
+		//console.log("Terminó");
+		retroalimentar("Obtuviste <b>"+buenas+"</b> de <b>"+conjuntoPreguntas.length+"</b>.");
+		document.getElementById("botonContinuar").style.display = "";
+		document.getElementById("botonContinuar").value = "Otra vez";
+		document.getElementById("botonContinuar").onclick = reiniciar;
+	}
+}
+function reiniciar(){
+		//alert("reiniciando...");
+		exportRoot.bien.gotoAndStop(0);
+		exportRoot.mal.gotoAndStop(0);
+		
+		buenas = 0;
+		pActual = 0;
+		intento = 0;
+		document.getElementById("setPregunta").innerHTML = "";
+		//document.getElementById("botonContinuar").onclick = generarPregunta;
+		//document.getElementById("botonContinuar").setAttribute("onclick", "generarPregunta(pActual)");
+		document.getElementById("botonContinuar").onclick = function(){generarPregunta(pActual);};
+		document.getElementById("botonContinuar").value = "Iniciar";
+		retroalimentar("");
+		
+}
+
+function hacerOpcion(boton){
+	boton.onclick = function(e){
+		//mensajear(this.id +" - " + this.id.substr(this.id.length - 1) + " - " + this.getAttribute("data-correcto"));
+		if(this.getAttribute("data-correcto") == "true"){
+			//mensajear("sí");
+			this.getElementsByClassName('palomita').item(0).style.display = "";
+			buenas++;
+			exportRoot.bien.play();
+			desactivarBotones();
+		} else {
+			this.getElementsByClassName('tache').item(0).style.display = "";
+			intento++;
+			deshacerOpcion(this);
+			if(intento >= maxIntento){
+				desactivarBotones();
+				exportRoot.mal.play();
+			}
+		}
+	}
+	boton.className = 'opcion pure-button';
+}
+function deshacerOpcion(boton){
+	boton.onclick = null;
+	//console.log("clase antes: "+boton.class);
+	boton.className = 'opcion pure-button pure-button-disabled';
+	//console.log("clase boton: "+boton.class);
+}
+
+
+function shuffle(array) {
+  var currentIndex = array.length
+    , temporaryValue
+    , randomIndex
+    ;
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+function retroalimentar(cadena){
+	document.getElementById("retroalimentacion").innerHTML = cadena;
+}
+
+
+function mensajear(cadena){
+	/*
+	var actualCadena = document.getElementById("mensajes").innerHTML;
+	var nuevaCadena = cadena + "<br />" + actualCadena;
+	document.getElementById("mensajes").innerHTML = nuevaCadena;
+	*/
+}
+</script>
+
+<script>
+var canvas, stage, exportRoot;
+
+function init() {
+	createjs.MotionGuidePlugin.install();
+
+	canvas = document.getElementById("canvas");
+	images = images||{};
+
+	var manifest = [
+		{src:"images/cocheBien.png", id:"cocheBien"},
+		{src:"images/cocheMal.png", id:"cocheMal"},
+		{src:"images/rally.jpg", id:"rally"}
+	];
+
+	var loader = new createjs.LoadQueue(false);
+	loader.addEventListener("fileload", handleFileLoad);
+	loader.addEventListener("complete", handleComplete);
+	loader.loadManifest(manifest);
+	alCargar();
+}
+
+function handleFileLoad(evt) {
+	if (evt.item.type == "image") { images[evt.item.id] = evt.result; }
+}
+
+function handleComplete() {
+	exportRoot = new lib.baseRally();
+
+	stage = new createjs.Stage(canvas);
+	stage.addChild(exportRoot);
+	stage.update();
+
+	createjs.Ticker.setFPS(30);
+	createjs.Ticker.addEventListener("tick", stage);
+}
+</script>
+
+<style>
+div#setPregunta{
+	padding:1px;
+	margin-bottom:0.25em;
+}
+div.preguntaTexto{
+	font-size:1.2em;
+}
+div.opciones{
+	margin:2px;
+}
+div.opciones a.opcion{
+	margin:2px;
+	white-space:inherit;
+}
+div#retroalimentacion{
+	font-size:1.4em;
+	text-align:center;
+	padding:1px;
+}
+</style>
+<link href="normalize.css" rel="stylesheet" type="text/css">
+<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body onload="init();">
+	<div id="main">
+		<p class="subtitulo_01">Unidad 2 <br><span class="titulo_01">Autoevaluación 3</span></p>
+		<p class="parrafo">
+        Para los diversos grupos de necesidades esenciales se puede formular una canasta normativa con satisfactores esenciales. Tomando en cuenta la información sobre el tema “2. Necesidades básicas y canasta básica”, participa en el siguiente ejercicio. <br />Indica con el puntero  si los enunciados que se presentan son falsos  o verdaderos, no olvides revisar tu resultado. 
+  		</p>
+
+		<canvas id="canvas" width="460" height="320" style="background-color:#ffffff; margin-bottom:1em;"></canvas>
+
+    	<div id="setPregunta">
+            <!--
+            <div class="preguntaTexto">Pregunta texto:</div>
+            <div class="opciones">
+                <div class="opcion" id="op1">posibilidad primera</div>
+                <div class="opcion" id="op2">Opción segunda</div>
+                <div class="opcion" id="op3">Tercera opción</div>
+            </div>
+            -->
+		</div>
+        <div id="retroalimentacion"></div>
+		<input id="botonContinuar" type="button" value="Iniciar" onClick="generarPregunta(pActual)">
+		<div id="mensajes"></div>
+    
+    </div>
+
+</body>
+</html>
