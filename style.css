@@ -3,8 +3,6 @@ body{
 	margin: 0;
 	padding: 0;
 	background:#FFF;
-	height:400px;
-	width:800px;	
 	margin-left:auto;
 	margin-right:auto;
 
@@ -25,69 +23,28 @@ body{
 	-moz-box-shadow: 0 2px 2px #9c9c9c;
 	-webkit-box-shadow: 0 2px 2px #9c9c9c;
 }
-div.preguntas{
-	padding: 25px;
-	color: #000;
-	background-color: #eaeaea;
-	border-radius: 5px;
-	border-style: none;
-	border-width: 2px;
-	border-color: #777;
-	overflow: visible;
-	min-width: 400px;
-	/*margin: 5px;*/
-	font-size: 12px;
-	text-align:left;		
+div#setPregunta{
+    padding:1px;
+    margin-bottom:0.25em;
+}
+div.preguntaTexto{
+    font-size:1.2em;
+}
+div.opciones{
+    margin:2px;
+}
+div.opciones a.opcion{
+    margin:2px;
+    white-space:inherit;
+}
+div#retroalimentacion{
+    font-size:1.4em;
+    text-align:center;
+    padding:1px;
 }
 .parrafo{
 	line-height: 1.5em;
 	text-align:left;	
-}
-.Dragable{
-	cursor: move;
-	-moz-user-select: -moz-none;
-	-khtml-user-select: none;
-	-webkit-user-select: none;
-	-o-user-select: none;
-	user-select: none;
-	width: auto;
-	/*height: 2em;*/
-	margin: 0px;
-	padding: 5px 5px 5px 5px;	
-	display: inline-block;
-	color: #000;
-	font-size: 14px;
-	text-align: center;
-	line-height: 11px;
-	font-weight: bold;
-	vertical-align:middle;
-	background-color:#FFF;
-	border-radius: 5px;
-	border-style: none;
-	border-width: 0px;
-	box-shadow: rgb(0, 0, 0) 0px 2px 5px 0px;	
-}
-
-.DropTarget{
-	min-width: 10em; 
-	min-height: 1.5em; 
-	background-color: rgba(0, 180, 228, .2);
-	border-radius: 2px;
-	border-color: #999;
-	border-style: dashed;
-	border-width: 1px;
-	overflow:visible;
-	display:inline-block;
-	vertical-align:middle;
-	padding: 5px;	
-}
-.DropTarget .Dragable{
-	height:auto;
-	background:none;
-	overflow:visible;
-	border:none;
-	display:inline-block;
-	vertical-align:middle;	
 }
 /* Estilo para los botones */
 button,
@@ -116,9 +73,8 @@ input:hover[type="reset"],
 input:hover[type="submit"] {
     color: rgba(8, 84, 135, .9);
 	background-color: rgba(255, 255, 255, 1);
-	border-color: #999;	
-	
-	transition: 		color 500ms ease, background-color 500ms ease;
+	border-color: #999;
+	transition: color 500ms ease, background-color 500ms ease;
 	-webkit-transition: color 500ms ease, background-color 500ms ease;
 }
 .subtitulo_01 {	font-family: Arial, Helvetica, sans-serif;
@@ -132,4 +88,23 @@ input:hover[type="submit"] {
 	font-size: 18px;
 	color: #186cc4;
 	text-align:left;	
+}
+@media screen and (max-width: 500px) {
+    html, body {
+        margin: 0;
+        padding: 0;
+    }
+    #main{
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+    p{
+        margin: 0.3em;
+        padding: 0.3em;
+    }
+    #canvas{
+        width: 100%;
+        height: 100%;
+    }
 }
